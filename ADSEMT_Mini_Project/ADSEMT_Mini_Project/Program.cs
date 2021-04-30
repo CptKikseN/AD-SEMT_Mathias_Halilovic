@@ -63,7 +63,6 @@ namespace ADSEMT_Mini_Project
             else return (0, 0, 0);
         }
 
-
         private static (int, int, int) KadaneAlgorithm(int[] array, int arraySize)
         {
             int maxSoFar = 0;
@@ -88,17 +87,21 @@ namespace ADSEMT_Mini_Project
             return (indexStart, indexEnd, maxSoFar);
         }
 
-
-
         static void Main()
         {
-            int[] testData = new int[] {7, -10, 5, 15, -6, -3, 0, 16, 1, -14};
+            int[] testData = new int[1000]; // Change number to test different n
 
-            Console.WriteLine("[{0}]", string.Join(", ", MaxSubarray(testData, 0, testData.Length-1)));
+            Random randNum = new Random();
+            for (int i = 0; i < testData.Length; i++)
+            {
+                testData[i] = randNum.Next(-100, 100); // testData contains randomly generated numbers from -100 to 100
+            }
 
+            Console.WriteLine("Divide-and-conquer method (i, j, sum):"); // i and j denote the delimitation of the array
+            Console.WriteLine("[{0}]", string.Join(", ", MaxSubarray(testData, 0, testData.Length - 1)));
+
+            Console.WriteLine("Kanade's algorithm (i, j, sum):"); // i and j denote the delimitation of the array
             Console.WriteLine("[{0}]", string.Join(", ", KadaneAlgorithm(testData, testData.Length)));
-
-            //Console.WriteLine("[{0}]", string.Join(", ", CrossSubarray(testData, 0, testData.Length/2, testData.Length-1)));
         }
     }
 }
