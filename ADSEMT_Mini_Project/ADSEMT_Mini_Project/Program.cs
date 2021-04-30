@@ -14,7 +14,6 @@ namespace ADSEMT_Mini_Project
 
             for(int i = mid; i >= low; i--)
             {
-                //Console.WriteLine(i);
                 sum += array[i];
                 if (sum > leftSum)
                 {
@@ -22,9 +21,7 @@ namespace ADSEMT_Mini_Project
                     maxLeftIndex = i;
                 }
             }
-
             sum = 0;
-
             for (int i = mid+1; i <= high; i++)
             {
                 sum += array[i];
@@ -39,57 +36,72 @@ namespace ADSEMT_Mini_Project
 
         private static (int, int, int) MaxSubarray(int[] array, int low, int high)
         {
-            int mid;
-
-
             if (low == high)
             {
                 return (low, high, array[low]);
             }
-
-            mid = (low + high) / 2;
-
-            Console.WriteLine(mid);
+            int mid = (low + high) / 2;
 
             (int lowLeft, int highLeft, int leftSubSum) = MaxSubarray(array, low, mid);
             (int lowRight, int highRight, int rightSubSum) = MaxSubarray(array, mid + 1, high);
             (int lowCross, int highCross, int sumCross) = CrossSubarray(array, low, mid, high);
 
-
             int maxSum = Math.Max(leftSubSum, Math.Max(rightSubSum, sumCross));
 
             if (maxSum == leftSubSum)
             {
-                //Console.WriteLine("left");
                 return (lowLeft, highLeft, leftSubSum);
             }
-
             else if (maxSum == rightSubSum)
             {
-                //Console.WriteLine("right");
                 return (lowRight, highRight, rightSubSum);
             }
-
             else if (maxSum == sumCross)
             {
-                //Console.WriteLine("cross");
                 return (lowCross, highCross, sumCross);
             }
+            else return (0, 0, 0);
+        }
 
-            else
+        private static (int, int, int) KadaneAlgorithm(int[] array, int arraySize)
+        {
+            int maxSoFar = 0;
+            int maxEnd = 0;
+            int indexStart = 0;
+            int indexEnd = 0;
+
+            for (int i = 0; i < arraySize; i++)
             {
-                return (0, 0, 0);
+                maxEnd = maxEnd + array[i];
+                if (maxEnd < 0)
+                {
+                    indexStart = i + 1;
+                    maxEnd = 0;
+                }
+                else if (maxSoFar < maxEnd)
+                {
+                    indexEnd = i;
+                    maxSoFar = maxEnd;
+                }
             }
-
+            return (indexStart, indexEnd, maxSoFar);
         }
 
         static void Main()
         {
-            int[] testData = new int[] {7, 5, 19, 15, -6, -3, 0, 16, 1, -14};
+            int[] testData = new int[1000]; // Change number to test different n
 
-            Console.WriteLine("[{0}]", string.Join(", ", MaxSubarray(testData, 0, testData.Length-1)));
+            Random randNum = new Random();
+            for (int i = 0; i < testData.Length; i++)
+            {
+                testData[i] = randNum.Next(-100, 100); // testData contains randomly generated numbers from -100 to 100
+            }
 
-            //Console.WriteLine("[{0}]", string.Join(", ", CrossSubarray(testData, 0, testData.Length/2, testData.Length-1)));
+            Console.WriteLine("Divide-and-conquer method (i, j, sum):"); // i and j denote the delimitation of the array
+            Console.WriteLine("[{0}]", string.Join(", ", MaxSubarray(testData, 0, testData.Length - 1)));
+
+            Console.WriteLine("Kanade's algorithm (i, j, sum):"); // i and j denote the delimitation of the array
+            Console.WriteLine("[{0}]", string.Join(", ", KadaneAlgorithm(testData, testData.Length)));
         }
     }
 }
